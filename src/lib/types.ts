@@ -4,12 +4,15 @@ export type QualityAttribute = {
   name: string;
   description: string;
   icon: LucideIcon;
+  example: string;
 };
 
 export type Standard = {
   id: string;
   title: string;
+  subtitle?: string;
   content: string;
+  details?: string;
 };
 
 export type QuizQuestion = {
@@ -32,3 +35,27 @@ export type EvaluationResult = {
   attribute: string;
   score: number;
 };
+
+export type HistoryEvent = {
+  year: string;
+  title: string;
+  description: string;
+};
+
+export type ImplementationStep = {
+  phase: string;
+  description: string;
+  practices: string[];
+};
+
+export type Resource = {
+  title: string;
+  description: string;
+  url: string;
+};
+
+export type ImportanceBenefit = {
+  target: string;
+  benefit: string;
+  icon: LucideIcon;
+}
