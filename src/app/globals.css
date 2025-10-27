@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,6 +6,12 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.high-contrast {
+  background-color: black !important;
+  color: yellow !important;
+}
+
 
 @layer base {
   :root {

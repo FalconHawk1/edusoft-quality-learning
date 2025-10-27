@@ -1,21 +1,44 @@
-"use client"
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import Logo from "./logo"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu } from "lucide-react"
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import Logo from './logo';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
 
 export function Header() {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const router = useRouter();
+  const [user, setUser] = useState<{ username: string } | null>(null);
+
+  useEffect(() => {
+    // Proteger la ruta /evaluate
+    if (pathname === '/evaluate' && !localStorage.getItem('user')) {
+      router.push('/auth-error');
+    }
+
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, [pathname, router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    router.push('/login');
+    // Opcional: mostrar un mensaje de "Sesión cerrada correctamente"
+    // Esto podría manejarse en la página de login con un parámetro en la URL
+  };
 
   const navItems = [
     { href: "/learn", label: "Aprende" },
     { href: "/evaluate", label: "Evalúa" },
-  ]
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -46,11 +69,7 @@ export function Header() {
         {/* Mobile Menu */}
         <Sheet>
           <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-            >
+            <Button variant="ghost" size="icon" className="md:hidden">
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle Menu</span>
             </Button>
@@ -77,16 +96,28 @@ export function Header() {
             </div>
           </SheetContent>
         </Sheet>
-        
+
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
-             {/* Can add search bar here if needed */}
+            {/* Can add search bar here if needed */}
           </div>
           <nav className="flex items-center">
-             <Button>Iniciar Sesión</Button>
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-600">
+                  Sesión iniciada como: <strong>{user.username}</strong>
+                </span>
+                <Button onClick={handleLogout} variant="outline">
+                  Cerrar sesión
+                </Button>
+              </div>
+            ) : (
+              <Button onClick={() => router.push('/login')}>Iniciar Sesión</Button>
+            )}
           </nav>
         </div>
       </div>
     </header>
-  )
+  );
 }
+

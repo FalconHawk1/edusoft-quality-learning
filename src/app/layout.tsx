@@ -1,8 +1,10 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Header } from '@/app/components/header';
 import { Toaster } from '@/components/ui/toaster';
+import AccessibilityButton from '@/app/components/AccessibilityButton';
 
 export const metadata: Metadata = {
   title: 'EduSoft Quality Learning',
@@ -27,6 +29,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
         </div>
         <Toaster />
+        <AccessibilityButton />
       </body>
     </html>
   );

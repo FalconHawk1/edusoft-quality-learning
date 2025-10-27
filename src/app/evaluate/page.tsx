@@ -1,7 +1,9 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -90,26 +92,64 @@ function ApplicationTable({ applications }: { applications: Application[] }) {
 }
 
 export default function EvaluatePage() {
-  const [applications, setApplications] = useState<Application[]>(mockApplications);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [user, setUser] = useState<{ username: string } | null>(null);
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
+  useEffect(() => {
+    // Proteger la ruta y cargar datos según el rol del usuario
+    const storedUser = localStorage.getItem('user');
+    if (!storedUser) {
+      router.push('/auth-error');
+      return;
+    }
+
+    const parsedUser = JSON.parse(storedUser);
+    setUser(parsedUser);
+
+    // Cargar aplicaciones según el rol
+    if (parsedUser.username === 'admin') {
+      setApplications(mockApplications);
+    } else {
+      // Simular carga de aplicaciones del estudiante desde localStorage
+      const studentApps = JSON.parse(localStorage.getItem('student_apps') || '[]');
+      setApplications(studentApps);
+    }
+  }, [router]);
+
+  // Maneja la adición de una nueva aplicación
   const handleAddApplication = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const newApp: Application = {
-      id: (applications.length + 2).toString(),
+      id: (applications.length + 1).toString(),
       name: formData.get('name') as string,
       description: formData.get('description') as string,
       url: formData.get('url') as string,
       createdAt: new Date().toISOString(),
+      // Asignar el creador de la aplicación para el rol de estudiante
+      createdBy: user?.username,
     };
-    setApplications((prev) => [...prev, newApp]);
+
+    let updatedApps: Application[];
+
+    if (user?.username === 'admin') {
+        updatedApps = [...applications, newApp];
+    } else {
+        updatedApps = [...applications, newApp];
+        // Guardar en localStorage para persistencia de estudiante
+        localStorage.setItem('student_apps', JSON.stringify(updatedApps));
+    }
+    
+    setApplications(updatedApps);
+
     setOpen(false);
     toast({
       title: "Aplicación Registrada",
       description: `"${newApp.name}" ha sido añadida con éxito.`,
-    })
+    });
   };
 
   return (
@@ -118,7 +158,9 @@ export default function EvaluatePage() {
         <div>
           <h1 className="text-4xl font-bold font-headline">Panel de Evaluación</h1>
           <p className="text-muted-foreground mt-2">
-            Registra y evalúa aplicaciones según los estándares de calidad del software.
+            {user?.username === 'admin'
+              ? 'Registra y supervisa todas las aplicaciones.'
+              : 'Registra y evalúa tus aplicaciones personales.'}
           </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>

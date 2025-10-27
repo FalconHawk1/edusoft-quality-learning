@@ -29,6 +29,7 @@ export type Application = {
   url: string;
   createdAt: string;
   averageScore?: number;
+  createdBy?: string; // Optional field to store the username of the creator
 };
 
 export type EvaluationResult = {
