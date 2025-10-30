@@ -1,180 +1,113 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+'use client';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { qualityAttributes, standardsAndModels, implementationSteps, importanceData, historyData, resourcesData, advancedQuizQuestions } from "@/lib/data";
-import Quiz from "@/app/components/Quiz";
-import { ArrowRight, CheckCircle, Target, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { HistoryTimeline } from "../components/HistoryTimeline";
+import { IntroductionSection } from "@/components/learning/IntroductionSection";
+import { StandardsSection } from "@/components/learning/StandardsSection";
+import { ModelsSection } from "@/components/learning/ModelsSection";
+import { CodingSection } from "@/components/learning/CodingSection";
+import { TestingSection } from "@/components/learning/TestingSection";
+import { ConclusionsSection } from "@/components/learning/ConclusionsSection";
+import { ResourcesSection } from "@/components/learning/ResourcesSection";
+import { softwareStandardsConcept } from '@/lib/data';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+// A new component for the 'Standards' concept section
+function SoftwareStandardsConceptSection() {
+  return (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">4. Estándares del Software</h2>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Diferencia entre Norma, Modelo y Estándar</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {softwareStandardsConcept.definitions.map((def, index) => (
+            <div key={index}>
+              <p className="font-semibold text-lg">{def.type}: <span className="font-normal text-base text-gray-700 dark:text-gray-300">{def.description}</span></p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Importancia de los Estándares</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 dark:text-gray-300">{softwareStandardsConcept.importance}</p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Comparativa de Estándares Usados en Desarrollo</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                  {softwareStandardsConcept.comparisonTable.headers.map((header, index) => (
+                    <th key={index} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+                {softwareStandardsConcept.comparisonTable.rows.map((row, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{row.area}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{row.standards}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 export default function LearnPage() {
+  const tabs = [
+    { value: "intro", label: "1. Introducción", Component: IntroductionSection },
+    { value: "standards", label: "2. Normas", Component: StandardsSection },
+    { value: "models", label: "3. Modelos", Component: ModelsSection },
+    { value: "concepts", label: "4. Estándares", Component: SoftwareStandardsConceptSection },
+    { value: "coding", label: "5. Codificar", Component: CodingSection },
+    { value: "testing", label: "6. Pruebas", Component: TestingSection },
+    { value: "conclusions", label: "7. Conclusiones", Component: ConclusionsSection },
+    { value: "resources", label: "8. Recursos", Component: ResourcesSection },
+  ];
+
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <header className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">
-          Aprende sobre Calidad del Software
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+          Guía Interactiva de Calidad del Software
         </h1>
         <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
-          Explora los conceptos fundamentales, normas y modelos que definen la calidad en el desarrollo de software.
+          Una guía educativa completa sobre los conceptos, normas, modelos y prácticas que definen la calidad en el desarrollo de software.
         </p>
       </header>
 
-      {/* 1. Historia de la Calidad del Software */}
-      <section id="history" className="mb-16">
-        <h2 className="text-3xl font-bold font-headline mb-8 text-center">1. Historia y Evolución de la Calidad del Software</h2>
-        <HistoryTimeline events={historyData} />
-      </section>
-
-      {/* 2. Importancia y Beneficios */}
-      <section id="importance" className="mb-16">
-         <h2 className="text-3xl font-bold font-headline mb-8 text-center">2. ¿Por Qué es Importante la Calidad?</h2>
-         <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h3 className="text-2xl font-semibold mb-4">Un pilar para el éxito</h3>
-            <p className="text-lg text-foreground/90 mb-4">
-              La calidad del software no es un lujo, sino una necesidad. Asegura que un producto no solo funcione, sino que lo haga de manera fiable, eficiente y segura, satisfaciendo tanto las necesidades del usuario como los objetivos del negocio.
-            </p>
-            <p className="text-lg text-foreground/90">
-              Invertir en calidad desde el inicio reduce costes a largo plazo, previene fallos catastróficos y construye una reputación sólida.
-            </p>
-          </div>
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="font-headline">Fallo Costoso: Ariane 5</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">En 1996, el cohete Ariane 5 explotó 40 segundos después de su lanzamiento debido a un error de software. Una conversión de datos incorrecta, que no fue probada adecuadamente, costó más de 370 millones de dólares. Este es un recordatorio extremo de la importancia de las pruebas y la calidad del código.</p>
-            </CardContent>
-          </Card>
-         </div>
-         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <Card className="hover:shadow-xl transition-shadow">
-              <CardHeader className="items-center">
-                <Users className="h-10 w-10 text-primary"/>
-                <CardTitle>Para el Usuario</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>Experiencia fluida, confianza en el producto y satisfacción que fomenta la lealtad.</p>
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-xl transition-shadow">
-              <CardHeader className="items-center">
-                <Target className="h-10 w-10 text-accent"/>
-                <CardTitle>Para el Negocio</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>Reducción de costes de mantenimiento, mejor reputación y mayor competitividad en el mercado.</p>
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-xl transition-shadow">
-              <CardHeader className="items-center">
-                <CheckCircle className="h-10 w-10 text-green-500"/>
-                <CardTitle>Para el Desarrollo</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>Código más fácil de mantener y evolucionar, menos estrés por errores y orgullo por el trabajo bien hecho.</p>
-              </CardContent>
-            </Card>
-         </div>
-      </section>
-
-      {/* 3. Implementación Práctica */}
-      <section id="implementation" className="mb-16">
-        <h2 className="text-3xl font-bold font-headline mb-8 text-center">3. Implementando la Calidad en Proyectos Reales</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {implementationSteps.map((step) => (
-            <Card key={step.phase} className="flex flex-col">
-              <CardHeader>
-                <CardTitle className="font-headline text-xl">{step.phase}</CardTitle>
-                <CardDescription>{step.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <h4 className="font-semibold mb-2">Prácticas y Herramientas:</h4>
-                <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                  {step.practices.map((practice, index) => (
-                    <li key={index}>{practice}</li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+      <Tabs defaultValue="intro" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 h-auto mb-6">
+          {tabs.map(tab => (
+            <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
           ))}
-        </div>
-      </section>
+        </TabsList>
 
-      {/* 4. Modelos y Normas Ampliados */}
-      <section id="standards" className="mb-16">
-        <h2 className="text-3xl font-bold font-headline mb-6 text-center">4. Modelos y Normas de Calidad</h2>
-        <Tabs defaultValue="iso25010" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 h-auto">
-            {standardsAndModels.map(standard => (
-              <TabsTrigger key={standard.id} value={standard.id} className="text-xs sm:text-sm">{standard.title}</TabsTrigger>
-            ))}
-          </TabsList>
-          {standardsAndModels.map(standard => (
-            <TabsContent key={standard.id} value={standard.id}>
-              <Card className="shadow-md">
-                <CardHeader>
-                  <CardTitle className="font-headline">{standard.title}</CardTitle>
-                  <CardDescription>{standard.subtitle}</CardDescription>
-                </CardHeader>
-                <CardContent className="text-base text-foreground/80 space-y-4">
-                  <p>{standard.content}</p>
-                   {standard.details && <p className="text-sm p-4 bg-secondary rounded-lg">{standard.details}</p>}
-                </CardContent>
-              </Card>
-            </TabsContent>
-          ))}
-        </Tabs>
-      </section>
-      
-      {/* 5. Atributos de Calidad Ampliados */}
-      <section id="attributes" className="mb-16">
-        <h2 className="text-3xl font-bold font-headline mb-8 text-center">5. Atributos de Calidad (ISO/IEC 25010)</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {qualityAttributes.map((attribute) => (
-            <Card key={attribute.name} className="flex flex-col hover:shadow-xl transition-shadow duration-300">
-              <CardHeader className="flex flex-row items-center gap-4">
-                <attribute.icon className="h-10 w-10 text-primary" />
-                <div>
-                  <CardTitle className="font-headline">{attribute.name}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-sm text-muted-foreground">{attribute.description}</p>
-                <p className="mt-4 text-xs p-2 bg-secondary rounded-md"><strong>Ejemplo de evaluación:</strong> {attribute.example}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* 6. Quiz Avanzado */}
-      <section id="quiz" className="mb-16">
-        <h2 className="text-3xl font-bold font-headline mb-8 text-center">6. Evaluación Final</h2>
-        <Quiz questions={advancedQuizQuestions} quizId="advanced-quality-quiz" />
-      </section>
-
-      {/* 7. Recursos Adicionales */}
-      <section id="resources">
-        <h2 className="text-3xl font-bold font-headline mb-8 text-center">7. Recursos Adicionales</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {resourcesData.map((resource) => (
-            <Card key={resource.title} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg">{resource.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
-                 <Button asChild variant="outline" size="sm">
-                  <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                    Visitar <ArrowRight className="ml-2 h-4 w-4"/>
-                  </a>
-                 </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+        {tabs.map(tab => (
+          <TabsContent key={tab.value} value={tab.value}>
+            <tab.Component />
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
   );
 }
