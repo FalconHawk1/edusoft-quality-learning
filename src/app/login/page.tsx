@@ -3,14 +3,20 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import Logo from '../components/logo';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showRegister, setShowRegister] = useState(false);
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,82 +30,103 @@ export default function LoginPage() {
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    setRegistrationSuccess(true);
+    toast({
+        title: "¡Registro Exitoso!",
+        description: "Tu cuenta ha sido creada (modo demostración)."
+    });
+    setShowRegister(false);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="p-8 bg-white rounded-lg shadow-md w-96">
+    <div className="flex items-center justify-center min-h-screen bg-secondary">
+      <Card className="w-full max-w-sm shadow-2xl">
         {!showRegister ? (
           <>
-            <h2 className="text-2xl font-bold text-center mb-6">Iniciar Sesión</h2>
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4">
+                <Logo />
+              </div>
+              <CardTitle className="font-headline text-2xl">Iniciar Sesión</CardTitle>
+              <CardDescription>Accede a tu cuenta de EduSoft</CardDescription>
+            </CardHeader>
             <form onSubmit={handleLogin}>
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2" htmlFor="username">Usuario</label>
-                <input
-                  type="text"
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  required
-                />
-              </div>
-              <div className="mb-6">
-                <label className="block text-gray-700 mb-2" htmlFor="password">Contraseña</label>
-                <input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  required
-                />
-              </div>
-              {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-              <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg">
-                Iniciar sesión
-              </button>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="username">Usuario</Label>
+                  <Input
+                    type="text"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="admin o estudiante"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Contraseña</Label>
+                  <Input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+              </CardContent>
+              <CardFooter className="flex-col gap-4">
+                <Button type="submit" className="w-full">
+                  Iniciar sesión
+                </Button>
+                <p className="text-center text-sm text-muted-foreground">
+                  ¿No tienes cuenta?{' '}
+                  <Button variant="link" className="p-0 h-auto" type="button" onClick={() => setShowRegister(true)}>
+                    Regístrate
+                  </Button>
+                </p>
+              </CardFooter>
             </form>
-            <p className="text-center mt-4">
-              ¿No tienes cuenta?{' '}
-              <button onClick={() => setShowRegister(true)} className="text-blue-500">
-                Registrarse
-              </button>
-            </p>
           </>
         ) : (
           <>
-            <h2 className="text-2xl font-bold text-center mb-6">Registrarse</h2>
-            {registrationSuccess ? (
-              <p className="text-green-500 text-center">¡Registro exitoso! (modo demostración)</p>
-            ) : (
-              <form onSubmit={handleRegister}>
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2" htmlFor="name">Nombre</label>
-                  <input type="text" id="name" className="w-full px-3 py-2 border rounded-lg" required />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2" htmlFor="email">Correo electrónico</label>
-                  <input type="email" id="email" className="w-full px-3 py-2 border rounded-lg" required />
-                </div>
-                <div className="mb-6">
-                  <label className="block text-gray-700 mb-2" htmlFor="password">Contraseña</label>
-                  <input type="password" id="password" className="w-full px-3 py-2 border rounded-lg" required />
-                </div>
-                <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg">
-                  Registrarse
-                </button>
-              </form>
-            )}
-            <p className="text-center mt-4">
-              <button onClick={() => { setShowRegister(false); setRegistrationSuccess(false); }} className="text-blue-500">
-                Volver a Iniciar Sesión
-              </button>
-            </p>
+            <CardHeader className="text-center">
+               <div className="mx-auto mb-4">
+                <Logo />
+              </div>
+              <CardTitle className="font-headline text-2xl">Crear una Cuenta</CardTitle>
+              <CardDescription>Completa el formulario para registrarte.</CardDescription>
+            </CardHeader>
+             <form onSubmit={handleRegister}>
+                <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="name">Nombre Completo</Label>
+                        <Input type="text" id="name" placeholder="Tu nombre" required />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Correo electrónico</Label>
+                        <Input type="email" id="email" placeholder="tu@correo.com" required />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="password-register">Contraseña</Label>
+                        <Input type="password" id="password-register" placeholder="••••••••" required />
+                    </div>
+                </CardContent>
+                <CardFooter className="flex-col gap-4">
+                    <Button type="submit" className="w-full">
+                    Registrarse
+                    </Button>
+                    <p className="text-center text-sm text-muted-foreground">
+                    ¿Ya tienes cuenta?{' '}
+                    <Button variant="link" className="p-0 h-auto" type="button" onClick={() => setShowRegister(false)}>
+                        Inicia Sesión
+                    </Button>
+                    </p>
+              </CardFooter>
+            </form>
           </>
         )}
-      </div>
+      </Card>
     </div>
   );
 }
