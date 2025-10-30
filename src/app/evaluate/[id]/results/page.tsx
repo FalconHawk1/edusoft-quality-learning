@@ -50,7 +50,7 @@ function ResultsPageContent() {
                 </Button>
             </div>
         </div>
-      <EvaluationResults results={results} />
+      <EvaluationResults results={results} applicationId={id} />
     </div>
   );
 }

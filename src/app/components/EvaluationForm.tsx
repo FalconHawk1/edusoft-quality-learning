@@ -1,15 +1,16 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
-import { Label } from '@/components/ui/label';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { EVALUATION_ATTRIBUTES } from '@/lib/constants';
+import { computeFinalScore } from '@/lib/evaluation';
+import type { Application } from '@/lib/types';
 
 const formSchema = z.object(
   EVALUATION_ATTRIBUTES.reduce((acc, attr) => {
@@ -38,6 +39,22 @@ export default function EvaluationForm({ applicationId }: { applicationId: strin
         attribute: attr.name,
         score: data[attr.name][0]
     }));
+
+    const itemsWithWeights = results.map(r => {
+        const attr = EVALUATION_ATTRIBUTES.find(a => a.name === r.attribute);
+        return { score: r.score, weight: attr?.weight || 0 };
+    });
+    const finalScore = computeFinalScore(itemsWithWeights);
+    
+    const studentAppsRaw = localStorage.getItem('student_apps');
+    if (studentAppsRaw) {
+        const studentApps = JSON.parse(studentAppsRaw) as Application[];
+        const appIndex = studentApps.findIndex(app => app.id === applicationId);
+        if (appIndex !== -1) {
+            studentApps[appIndex].averageScore = finalScore;
+            localStorage.setItem('student_apps', JSON.stringify(studentApps));
+        }
+    }
     
     const queryParams = new URLSearchParams();
     results.forEach(r => queryParams.append(r.attribute, r.score.toString()));

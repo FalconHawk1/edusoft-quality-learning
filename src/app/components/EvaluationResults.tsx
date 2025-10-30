@@ -1,5 +1,5 @@
 'use client';
-
+import { useEffect } from 'react';
 import {
   PolarGrid,
   PolarAngleAxis,
@@ -13,9 +13,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EVALUATION_ATTRIBUTES } from '@/lib/constants';
 import { computeFinalScore, getScoreInterpretation } from '@/lib/evaluation';
-import type { EvaluationResult } from '@/lib/types';
+import type { EvaluationResult, Application } from '@/lib/types';
 
-export default function EvaluationResults({ results }: { results: EvaluationResult[] }) {
+export default function EvaluationResults({ results, applicationId }: { results: EvaluationResult[], applicationId: string }) {
   const itemsWithWeights = results.map(r => {
     const attr = EVALUATION_ATTRIBUTES.find(a => a.name === r.attribute);
     return { score: r.score, weight: attr?.weight || 0 };
@@ -23,6 +23,24 @@ export default function EvaluationResults({ results }: { results: EvaluationResu
 
   const finalScore = computeFinalScore(itemsWithWeights);
   const interpretation = getScoreInterpretation(finalScore);
+
+  useEffect(() => {
+    const storedApps = JSON.parse(localStorage.getItem('student_apps') || '[]') as Application[];
+    const appIndex = storedApps.findIndex(app => app.id === applicationId);
+    
+    if (appIndex !== -1 && storedApps[appIndex].averageScore !== finalScore) {
+        storedApps[appIndex].averageScore = finalScore;
+        localStorage.setItem('student_apps', JSON.stringify(storedApps));
+    }
+    
+    const mockApps = JSON.parse(JSON.stringify(require('@/lib/data').mockApplications)) as Application[];
+    const mockAppIndex = mockApps.findIndex(app => app.id === applicationId);
+    if(mockAppIndex !== -1 && mockApps[mockAppIndex].averageScore !== finalScore) {
+        // This is just to reflect on the UI, will be reset on reload
+        mockApps[mockAppIndex].averageScore = finalScore;
+    }
+
+  }, [finalScore, applicationId]);
 
   const chartData = results.map(r => ({
     subject: r.attribute,
