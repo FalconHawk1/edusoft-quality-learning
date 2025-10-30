@@ -1,6 +1,6 @@
 'use client';
 import { Suspense } from 'react';
-import { useSearchParams, notFound, useRouter } from 'next/navigation';
+import { useSearchParams, notFound, useRouter, useParams } from 'next/navigation';
 import EvaluationResults from '@/app/components/EvaluationResults';
 import { EVALUATION_ATTRIBUTES } from '@/lib/constants';
 import type { EvaluationResult } from '@/lib/types';
@@ -9,9 +9,11 @@ import { ArrowLeft, RotateCw } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
-function ResultsPageContent({ id }: { id: string }) {
+function ResultsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
 
   const results: EvaluationResult[] = [];
   let isValid = true;
@@ -24,7 +26,7 @@ function ResultsPageContent({ id }: { id: string }) {
     results.push({ attribute: attr.name, score: parseFloat(scoreStr) });
   }
 
-  if (!isValid) {
+  if (!isValid || !id) {
     return notFound();
   }
 
@@ -53,11 +55,10 @@ function ResultsPageContent({ id }: { id: string }) {
   );
 }
 
-export default function ResultsPage({ params }: { params: { id: string } }) {
-  const resolvedParams = React.use(Promise.resolve(params));
+export default function ResultsPage() {
   return (
     <Suspense fallback={<div>Cargando resultados...</div>}>
-      <ResultsPageContent id={resolvedParams.id} />
+      <ResultsPageContent />
     </Suspense>
   );
 }
