@@ -7,6 +7,7 @@ import type { EvaluationResult } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, RotateCw } from 'lucide-react';
 import Link from 'next/link';
+import React from 'react';
 
 function ResultsPageContent({ id }: { id: string }) {
   const searchParams = useSearchParams();

@@ -4,6 +4,7 @@ import { mockApplications } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import React from 'react';
 
 export default function EvaluateAppPage({ params }: { params: { id: string } }) {
   const application = mockApplications.find((app) => app.id === params.id);
