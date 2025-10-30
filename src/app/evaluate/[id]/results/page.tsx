@@ -54,9 +54,10 @@ function ResultsPageContent({ id }: { id: string }) {
 }
 
 export default function ResultsPage({ params }: { params: { id: string } }) {
+  const resolvedParams = React.use(Promise.resolve(params));
   return (
     <Suspense fallback={<div>Cargando resultados...</div>}>
-      <ResultsPageContent id={params.id} />
+      <ResultsPageContent id={resolvedParams.id} />
     </Suspense>
   );
 }
