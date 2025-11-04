@@ -16,7 +16,7 @@ export function ModelsSection() {
       <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">3. Modelos de Calidad del Software</h2>
 
       {qualityModels.map((model) => {
-        const ModelIcon = iconMap[model.icon.displayName || 'Layers'];
+        const ModelIcon = iconMap[model.icon] || Layers;
         return (
           <Card key={model.id}>
             <CardHeader>

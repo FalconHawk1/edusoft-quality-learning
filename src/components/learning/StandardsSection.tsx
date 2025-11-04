@@ -28,7 +28,7 @@ export function StandardsSection() {
       
       <div className="space-y-4">
         {qualityStandards.map((standard) => {
-          const StandardIcon = iconMap[standard.icon.displayName || 'BookCopy'];
+          const StandardIcon = iconMap[standard.icon] || BookCopy;
           return (
             <Card key={standard.id}>
               <CardHeader>
@@ -47,7 +47,7 @@ export function StandardsSection() {
                       {standard.attributes && (
                         <div className="mt-4 space-y-3">
                           {standard.attributes.map((attr, index) => {
-                            const AttrIcon = iconMap[attr.icon.displayName || 'CheckCircle'];
+                            const AttrIcon = iconMap[attr.icon] || CheckCircle;
                             return (
                               <div key={index} className="flex items-start gap-3 rounded-lg border p-3">
                                 <AttrIcon className="h-5 w-5 mt-1 flex-shrink-0 text-gray-600 dark:text-gray-400" />

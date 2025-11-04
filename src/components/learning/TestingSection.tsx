@@ -28,7 +28,7 @@ export function TestingSection() {
             <p className="mb-4 text-gray-700 dark:text-gray-300">{testingAndEvaluationContent.introduction}</p>
             <div className="space-y-4">
                 {testingAndEvaluationContent.testingTypes.map((type, index) => {
-                const Icon = iconMap[type.icon.displayName || 'TestTube'];
+                const Icon = iconMap[type.icon] || TestTube;
                 return (
                     <div key={index} className="flex items-start gap-3">
                     <Icon className="h-6 w-6 mt-1 flex-shrink-0 text-blue-500" />
