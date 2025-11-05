@@ -38,6 +38,7 @@ export function Header() {
   const navItems = [
     { href: "/learn", label: "Aprende" },
     { href: "/evaluate", label: "Evalúa" },
+    { href: "/lab", label: "Laboratorio" }, // <-- NUEVO ENLACE AÑADIDO AQUÍ
   ];
 
   return (
@@ -120,4 +121,3 @@ export function Header() {
     </header>
   );
 }
-
