@@ -11,6 +11,9 @@ import { ConclusionsSection } from "@/components/learning/ConclusionsSection";
 import { ResourcesSection } from "@/components/learning/ResourcesSection";
 import { softwareStandardsConcept } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// --- Importaciones para el Quiz ---
+import Quiz from '@/app/components/Quiz';
+import { finalQuizQuestions } from '@/lib/quiz-questions';
 
 // A new component for the 'Standards' concept section
 function SoftwareStandardsConceptSection() {
@@ -72,6 +75,19 @@ function SoftwareStandardsConceptSection() {
   );
 }
 
+// --- Componente para el contenido del Quiz ---
+function QuizSection() {
+  return (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Evaluación Final</h2>
+      <p className="text-muted-foreground">
+        Pon a prueba tus conocimientos sobre los conceptos clave de la calidad del software con esta evaluación final. ¡Demuestra lo que has aprendido!
+      </p>
+      <Quiz questions={finalQuizQuestions} />
+    </div>
+  );
+}
+
 export default function LearnPage() {
   const tabs = [
     { value: "intro", label: "1. Introducción", Component: IntroductionSection },
@@ -82,6 +98,8 @@ export default function LearnPage() {
     { value: "testing", label: "6. Pruebas", Component: TestingSection },
     { value: "conclusions", label: "7. Conclusiones", Component: ConclusionsSection },
     { value: "resources", label: "8. Recursos", Component: ResourcesSection },
+    // --- Pestaña del Quiz añadida al final ---
+    { value: "quiz", label: "Evaluación Final", Component: QuizSection },
   ];
 
   return (
@@ -96,7 +114,7 @@ export default function LearnPage() {
       </header>
 
       <Tabs defaultValue="intro" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 h-auto mb-6">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 h-auto mb-6">
           {tabs.map(tab => (
             <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
           ))}
