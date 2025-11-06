@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
-        <section className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center text-center text-white overflow-hidden">
+        <section className="relative w-full py-24 sm:py-32 flex items-center justify-center text-center text-white">
           {heroImage && (
             <Image
               src={heroImage.imageUrl}
