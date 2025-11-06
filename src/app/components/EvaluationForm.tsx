@@ -45,14 +45,23 @@ export default function EvaluationForm({ applicationId }: { applicationId: strin
         return { score: r.score, weight: attr?.weight || 0 };
     });
     const finalScore = computeFinalScore(itemsWithWeights);
-    
-    const studentAppsRaw = localStorage.getItem('student_apps');
-    if (studentAppsRaw) {
-        const studentApps = JSON.parse(studentAppsRaw) as Application[];
-        const appIndex = studentApps.findIndex(app => app.id === applicationId);
+
+    const storedUser = localStorage.getItem('user');
+    if (!storedUser) {
+      router.push('/auth-error');
+      return;
+    }
+    const user = JSON.parse(storedUser);
+
+    const storageKey = user.username === 'admin' ? 'all_apps' : 'student_apps';
+    const appsRaw = localStorage.getItem(storageKey);
+
+    if (appsRaw) {
+        const apps = JSON.parse(appsRaw) as Application[];
+        const appIndex = apps.findIndex(app => app.id === applicationId);
         if (appIndex !== -1) {
-            studentApps[appIndex].averageScore = finalScore;
-            localStorage.setItem('student_apps', JSON.stringify(studentApps));
+            apps[appIndex].averageScore = finalScore;
+            localStorage.setItem(storageKey, JSON.stringify(apps));
         }
     }
     

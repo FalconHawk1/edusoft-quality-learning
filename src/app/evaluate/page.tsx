@@ -99,7 +99,6 @@ export default function EvaluatePage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Proteger la ruta y cargar datos según el rol del usuario
     const storedUser = localStorage.getItem('user');
     if (!storedUser) {
       router.push('/auth-error');
@@ -109,18 +108,15 @@ export default function EvaluatePage() {
     const parsedUser = JSON.parse(storedUser);
     setUser(parsedUser);
 
-    // Cargar aplicaciones según el rol
     if (parsedUser.username === 'admin') {
       const allApps = JSON.parse(localStorage.getItem('all_apps') || JSON.stringify(mockApplications));
       setApplications(allApps);
     } else {
-      // Simular carga de aplicaciones del estudiante desde localStorage
       const studentApps = JSON.parse(localStorage.getItem('student_apps') || '[]');
       setApplications(studentApps);
     }
   }, [router]);
 
-  // Maneja la adición de una nueva aplicación
   const handleAddApplication = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -133,15 +129,11 @@ export default function EvaluatePage() {
       createdBy: user?.username,
     };
 
-    let updatedApps: Application[];
+    const updatedApps = [...applications, newApp];
 
     if (user?.username === 'admin') {
-        const currentApps = JSON.parse(localStorage.getItem('all_apps') || JSON.stringify(mockApplications));
-        updatedApps = [...currentApps, newApp];
         localStorage.setItem('all_apps', JSON.stringify(updatedApps));
     } else {
-        const studentApps = JSON.parse(localStorage.getItem('student_apps') || '[]');
-        updatedApps = [...studentApps, newApp];
         localStorage.setItem('student_apps', JSON.stringify(updatedApps));
     }
     
