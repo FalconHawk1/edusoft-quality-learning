@@ -111,7 +111,8 @@ export default function EvaluatePage() {
 
     // Cargar aplicaciones según el rol
     if (parsedUser.username === 'admin') {
-      setApplications(mockApplications);
+      const allApps = JSON.parse(localStorage.getItem('all_apps') || JSON.stringify(mockApplications));
+      setApplications(allApps);
     } else {
       // Simular carga de aplicaciones del estudiante desde localStorage
       const studentApps = JSON.parse(localStorage.getItem('student_apps') || '[]');
@@ -124,22 +125,23 @@ export default function EvaluatePage() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const newApp: Application = {
-      id: (applications.length + 1).toString(),
+      id: new Date().getTime().toString(),
       name: formData.get('name') as string,
       description: formData.get('description') as string,
       url: formData.get('url') as string,
       createdAt: new Date().toISOString(),
-      // Asignar el creador de la aplicación para el rol de estudiante
       createdBy: user?.username,
     };
 
     let updatedApps: Application[];
 
     if (user?.username === 'admin') {
-        updatedApps = [...applications, newApp];
+        const currentApps = JSON.parse(localStorage.getItem('all_apps') || JSON.stringify(mockApplications));
+        updatedApps = [...currentApps, newApp];
+        localStorage.setItem('all_apps', JSON.stringify(updatedApps));
     } else {
-        updatedApps = [...applications, newApp];
-        // Guardar en localStorage para persistencia de estudiante
+        const studentApps = JSON.parse(localStorage.getItem('student_apps') || '[]');
+        updatedApps = [...studentApps, newApp];
         localStorage.setItem('student_apps', JSON.stringify(updatedApps));
     }
     
